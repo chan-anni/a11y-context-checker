@@ -1,0 +1,11 @@
+name: 'Semantic A11y Context Checker'
+description: 'Audits code for semantic and contextual WCAG violations'
+author: 'Annika Chan'
+inputs:
+  github-token:
+    description: 'The GITHUB_TOKEN to allow posting PR comments'
+    required: true
+    default: ${{ github.token }}
+runs:
+  using: 'node20'
+  main: 'src/index.js'
