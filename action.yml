@@ -4,8 +4,7 @@ author: 'Annika Chan'
 inputs:
   github-token:
     description: 'The GITHUB_TOKEN to allow posting PR comments'
-    required: true
-    default: ${{ github.token }}
+    required: false
 runs:
   using: 'node20'
   main: 'src/index.js'

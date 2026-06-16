@@ -1,0 +1,9 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-action.json": ["action.yml", "action.yaml"]
+  },
+  "yaml.validate": true,
+  "files.exclude": {
+    "node_modules": true
+  }
+}
