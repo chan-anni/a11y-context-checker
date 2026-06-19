@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Test Suite: Link Purpose</title>
+</head>
+<body>
+
+  <section id="links-pass">
+    <h2>Accessible Links (Should NOT trigger violations)</h2>
+    
+    <p>Download our <a href="report.pdf">2026 Annual Financial Report</a>.</p>
+    
+    <p>We launched a new product line. <a href="details.html" aria-label="Learn more about our new ecosystem">Learn more</a>.</p>
+    
+    <a href="/home">
+      <img src="home.png" alt="Navigate back to the home page">
+    </a>
+  </section>
+
+  <section id="links-fail">
+    <h2>Inaccessible Links (Should trigger exactly 4 violations)</h2>
+    
+    <p>To read the specifications, <a href="specs.html">click here</a>.</p>
+
+    <p>Our blog has been updated. <a href="blog.html">READ MORE</a>.</p>
+
+    <p>Follow us on social media: <a href="twitter.com/profile"><img src="twitter-icon.png"></a></p>
+
+    <p>Check out our documentation here: <a href="https://example.com/docs/api">https://example.com/docs/api</a></p>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Test Suite: Abbreviations</title>
+</head>
+<body>
+
+  <section id="abbreviations-pass">
+    <h2>Correctly Handled Content (Should NOT trigger violations)</h2>
+    
+    <p>The <abbr title="World Health Organization">WHO</abbr> released a new report.</p>
+    
+    <p>Meet me at 5 PM. It is OK if you are late. YES, I will be THE person by the door.</p>
+    
+    <div class="banner">
+      <span>ATTENTION: PLEASE SUBMIT YOUR TAX FORMS TODAY</span>
+    </div>
+  </section>
+
+  <section id="abbreviations-fail">
+    <h2>Inaccessible Content (Should trigger exactly 3 violations)</h2>
+    
+    <p>Contact the <abbr title="">NASA</abbr> space center.</p>
+
+    <p>Please review the JSON payload before sending it to the server.</p>
+
+    <p>The system uses HTML5 specifications natively.</p>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Test Suite: Info & Relationships</title>
+</head>
+<body>
+
+  <section id="structure-pass">
+    <h1>Page Main Title</h1>
+    <h2>Section Sub-heading</h2>
+    <p>Some content text goes here.</p>
+
+    <label for="user-email">Email Address</label>
+    <input type="email" id="user-email" name="email">
+
+    <table>
+      <caption>Quarterly Profit Margins</caption>
+      <thead>
+        <tr>
+          <th scope="col">Quarter</th>
+          <th scope="col">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Q1 2026</th>
+          <td>$45,000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul>
+      <li>First Item</li>
+      <li>Second Item</li>
+    </ul>
+  </section>
+
+  <section id="structure-fail">
+    <h5>Deeply Nested Heading out of nowhere</h5>
+
+    <div>
+      <span>Enter your username:</span>
+      <input type="text" id="username-field"> </div>
+
+    <table>
+      <tr>
+        <td>Product Name</td> <td>Price</td>
+      </tr>
+      <tr>
+        <td>Widget A</td>
+        <td>$10.00</td>
+      </tr>
+    </table>
+
+    <ul>
+      <div>Category Heading</div> <li>Item A</li>
+    </ul>
+  </section>
+
+</body>
+</html>
