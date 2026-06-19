@@ -19,9 +19,9 @@ export default {
     $('p, li, span').each((_, element) => {
       const fullText = $(element).text().trim();
       
-      // --- FILTER 1: Skip if the entire element text is capitalized (e.g., Shouting/Styling) ---
+      // Skip if the entire element text is capitalized (e.g., Shouting/Styling)
       if (fullText === fullText.toUpperCase() && fullText.match(/[A-Z]/)) {
-        return; // Skip this whole element
+        return;
       }
 
       const acronymRegex = /\b[A-Z]{2,5}\b/g; 
@@ -30,7 +30,7 @@ export default {
       while ((match = acronymRegex.exec(fullText)) !== null) {
         const acronym = match[0];
         
-        // --- FILTER 2: Skip if the matched word lives in our global exemptions list ---
+        // Skip if the matched word lives in our global exemptions list
         if (EXEMPTIONS.has(acronym)) continue;
 
         // Ensure this acronym isn't already inside or part of an <abbr> tag

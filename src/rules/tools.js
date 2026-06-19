@@ -2,7 +2,7 @@
 
 import wcag244 from './wcag_244.js';
 import wcag314 from './wcag_314.js';
-import wcag131 from './wcag131.js';
+import wcag131 from './wcag_131.js';
 
 export const rules = [
   wcag244,
