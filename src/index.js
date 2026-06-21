@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import * as cheerio from 'cheerio';
 import { rules } from './rules/tools.js';
+import { getOllamaFix } from './ollama.js';
 
 function getFiles(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -22,43 +23,77 @@ function getFiles(dir, fileList = []) {
 // --- Online Run Function
 async function run() {
   try {
-    core.info("Running Modular Semantic Accessibility Audit...");
-
-    // CAPTURE THE GITHUB CLOUD CONTEXT
-    // github.context contains the entire webhook payload sent by GitHub
-    const context = github.context;
+    core.info("Running Accessibility Audit Engine...");
     
-    // Check if this action was actually triggered by a Pull Request
-    const isPullRequest = context.eventName === 'pull_request';
-    
-    if (isPullRequest) {
-      const prNumber = context.payload.pull_request.number;
-      const repoOwner = context.repo.owner;
-      const repoName = context.repo.repo;
-      
-      core.info(`Detected running inside Pull Request #${prNumber} on ${repoOwner}/${repoName}`);
-    } else {
-      core.info(`Running outside of a Pull Request environment (${context.eventName} event).`);
-    }
-
     const workspacePath = process.env.GITHUB_WORKSPACE || '.';
     const targetFiles = getFiles(workspacePath);
-    let totalViolations = 0;
+    const allViolations = [];
 
+    // Gather all violations using Cheerio
     targetFiles.forEach(filePath => {
       const content = fs.readFileSync(filePath, 'utf-8');
       const relativePath = path.relative(workspacePath, filePath);
       const $ = cheerio.load(content);
+      const fileLines = content.split('\n');
 
       rules.forEach(rule => {
-        totalViolations += rule.run($, relativePath, core, content); 
+        const issues = rule.run($, relativePath, core, fileLines);
+        if (Array.isArray(issues)) {
+          allViolations.push(...issues);
+        }
       });
     });
 
-    if (totalViolations > 0) {
-      core.setFailed(`\nAudit failed: Complete with ${totalViolations} warnings flagged.`);
+    // Process violations with Ollama and Post to GitHub PR Review Comments
+    if (allViolations.length > 0) {
+      const token = process.env.GITHUB_TOKEN;
+      const octokit = token ? github.getOctokit(token) : null;
+      const context = github.context;
+      const isPullRequest = context.payload.pull_request;
+
+      for (const issue of allViolations) {
+        core.info(`🤖 Querying local Ollama instance for: ${issue.ruleId}...`);
+        const aiFix = await getOllamaFix(issue.ruleId, issue.outerHtml);
+
+        // Build the special Markdown block structure
+        const commentBody = `
+### --- Automated Accessibility Review Fix ---
+
+| Rule ID | Severity |
+| --- | --- |
+| \`${issue.ruleId}\` | ⚠️ Critical Context Flaw |
+
+**Reasoning:** ${issue.message}
+
+#### 💡 Suggested Remediation:
+Click the button below to apply this accessible replacement code immediately.
+
+\`\`\`suggestion
+${aiFix}
+\`\`\`
+        `.trim();
+
+        // If we are live in a GitHub PR environment, post the interactive review comment
+        if (octokit && isPullRequest) {
+          await octokit.rest.pulls.createReviewComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            commit_id: context.payload.pull_request.head.sha,
+            path: issue.relativePath,
+            side: 'RIGHT',
+            line: issue.startLine,
+            body: commentBody,
+          });
+          core.info(`✅ Live comment posted to line ${issue.startLine}`);
+        } else {
+          // Local terminal fallback preview
+          core.info(`\n[Local Mode Preview] line ${issue.startLine}:\n${commentBody}\n----------------\n`);
+        }
+      }
+      core.setFailed(`Audit complete: Found ${allViolations.length} items needing review.`);
     } else {
-      core.info("\nAudit complete: Perfect semantic context maintained!");
+      core.info("✅ Audit complete: Zero context flaws found!");
     }
   } catch (error) {
     core.setFailed(`Action execution failed: ${error.message}`);
