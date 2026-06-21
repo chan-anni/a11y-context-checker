@@ -7,14 +7,25 @@ import { rules } from './rules/tools.js';
 
 function getFiles(dir, fileList = []) {
   const files = fs.readdirSync(dir);
-  files.forEach(file => {
-    const filePath = path.join(dir, file);
-    if (file === 'node_modules' || file === '.git') return;
-    if (fs.statSync(filePath).isDirectory()) {
-      getFiles(filePath, fileList);
-    } else if (/\.(html|jsx|tsx)$/.test(file)) {
-      fileList.push(filePath);
-    }
+  // files.forEach(file => {
+  //   const filePath = path.join(dir, file);
+  //   if (file === 'node_modules' || file === '.git') return;
+  //   if (fs.statSync(filePath).isDirectory()) {
+  //     getFiles(filePath, fileList);
+  //   } else if (/\.(html|jsx|tsx)$/.test(file)) {
+  //     fileList.push(filePath);
+  //   }
+  // });
+  // Inside your targetFiles.forEach loop in src/index.js:
+  files.forEach(filePath => {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const relativePath = path.relative(workspacePath, filePath);
+    const $ = cheerio.load(content);
+
+    rules.forEach(rule => {
+      // PASS CONTENT HERE: Add 'content' as the 4th argument
+      totalViolations += rule.run($, relativePath, core, content); 
+    });
   });
   return fileList;
 }
