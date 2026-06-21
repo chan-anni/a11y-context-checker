@@ -56,7 +56,7 @@ async function run() {
     });
 
     if (totalViolations > 0) {
-      core.info(`\nAudit complete with ${totalViolations} warnings flagged.`);
+      core.setFailed(`\nAudit failed: Complete with ${totalViolations} warnings flagged.`);
     } else {
       core.info("\nAudit complete: Perfect semantic context maintained!");
     }
