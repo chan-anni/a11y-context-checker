@@ -97669,29 +97669,19 @@ const tools_rules = [
 
 function getFiles(dir, fileList = []) {
   const files = external_fs_namespaceObject.readdirSync(dir);
-  // files.forEach(file => {
-  //   const filePath = path.join(dir, file);
-  //   if (file === 'node_modules' || file === '.git') return;
-  //   if (fs.statSync(filePath).isDirectory()) {
-  //     getFiles(filePath, fileList);
-  //   } else if (/\.(html|jsx|tsx)$/.test(file)) {
-  //     fileList.push(filePath);
-  //   }
-  // });
-  // Inside your targetFiles.forEach loop in src/index.js:
-  files.forEach(filePath => {
-    const content = external_fs_namespaceObject.readFileSync(filePath, 'utf-8');
-    const relativePath = external_path_namespaceObject.relative(workspacePath, filePath);
-    const $ = load_parse_load(content);
-
-    tools_rules.forEach(rule => {
-      // PASS CONTENT HERE: Add 'content' as the 4th argument
-      totalViolations += rule.run($, relativePath, core_namespaceObject, content); 
-    });
+  files.forEach(file => {
+    const filePath = external_path_namespaceObject.join(dir, file);
+    if (file === 'node_modules' || file === '.git') return;
+    if (external_fs_namespaceObject.statSync(filePath).isDirectory()) {
+      getFiles(filePath, fileList);
+    } else if (/\.(html|jsx|tsx)$/.test(file)) {
+      fileList.push(filePath);
+    }
   });
   return fileList;
 }
 
+// --- Online Run Function
 async function run() {
   try {
     info("Running Modular Semantic Accessibility Audit...");
@@ -97723,7 +97713,7 @@ async function run() {
       const $ = load_parse_load(content);
 
       tools_rules.forEach(rule => {
-        totalViolations += rule.run($, relativePath, core_namespaceObject);
+        totalViolations += rule.run($, relativePath, core_namespaceObject, content); 
       });
     });
 
@@ -97781,4 +97771,3 @@ async function localRun() {
 
 
 run();
-
