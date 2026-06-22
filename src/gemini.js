@@ -30,6 +30,7 @@ export async function getGeminiFix(ruleId, ruleDescription, violationMessage, br
       1. Fix ONLY the issue specified by the linter metadata. Do not change other attributes, classes, or styles.
       2. Do NOT wrap the output in parent elements (like <p> or <div> tags) if they weren't part of the target code snippet.
       3. Output ONLY the raw, corrected HTML tag. Do not write explanations, backticks, or markdown.
+      4. You MUST rewrite inner text of ambiguous links (e.g., "click here") to be contextually descriptive based on the href destination (e.g., change "click here" to "View Italy Route Map"). Alternately, add a highly descriptive "aria-label" attribute.
       
       Corrected HTML Tag:
     `.trim();
