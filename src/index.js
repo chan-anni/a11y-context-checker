@@ -52,8 +52,15 @@ async function run() {
       const isPullRequest = context.payload.pull_request;
 
       for (const issue of allViolations) {
-        core.info(`🤖 Querying Gemini instance for: ${issue.ruleId}...`);
-        const aiFix = await getGeminiFix(issue.ruleId, issue.outerHtml);
+        core.info(`🤖 Querying Gemini for rule: ${issue.ruleId}...`);
+        
+        // Pass Cheerio's rule id, rule description, and unique message into Gemini!
+        const aiFix = await getGeminiFix(
+          issue.ruleId, 
+          issue.description, // Or pull dynamically from rule object
+          issue.message, 
+          issue.outerHtml
+        );
 
         // Build the special Markdown block structure
         const commentBody = `
