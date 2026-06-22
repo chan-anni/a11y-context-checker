@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import * as cheerio from 'cheerio';
 import { rules } from './rules/tools.js';
-import { getOllamaFix } from './ollama.js';
+import { getGeminiFix } from './gemini.js';
 
 function getFiles(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -52,8 +52,8 @@ async function run() {
       const isPullRequest = context.payload.pull_request;
 
       for (const issue of allViolations) {
-        core.info(`🤖 Querying local Ollama instance for: ${issue.ruleId}...`);
-        const aiFix = await getOllamaFix(issue.ruleId, issue.outerHtml);
+        core.info(`🤖 Querying Gemini instance for: ${issue.ruleId}...`);
+        const aiFix = await getGeminiFix(issue.ruleId, issue.outerHtml);
 
         // Build the special Markdown block structure
         const commentBody = `
