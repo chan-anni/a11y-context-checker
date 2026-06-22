@@ -39,6 +39,10 @@ async function run() {
       rules.forEach(rule => {
         const issues = rule.run($, relativePath, core, fileLines);
         if (Array.isArray(issues)) {
+          // Map the description from the active rule definition directly!
+          issues.forEach(issue => {
+            issue.description = rule.description;
+          });
           allViolations.push(...issues);
         }
       });
