@@ -2,8 +2,6 @@
 
 An AI-powered GitHub Action that runs contextual digital accessibility audits (based on the Web Content Accessibility Guidelines) across active Pull Requests. Instead of just flagging errors, it uses Gemini to inject native, single-click code remediation suggestions straight into your PR code reviews.
 
-![GitHub Marketplace Version](https://img.shields.io/badge/marketplace-v1.0.0-blue?logo=github)
-
 ---
 
 ## Current Features
